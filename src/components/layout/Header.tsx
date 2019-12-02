@@ -1,14 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { useLocation } from 'react-router'
 
 import styled from 'styled-components'
-import { rem } from 'polished'
 
 const Wrapper = styled.header`
   color: #ffffff;
   background-color: #3340a9;
-  min-height: ${rem('325px')};
+  min-height: 325px;
 
   nav {
     display: flex;
@@ -93,32 +90,13 @@ const Wrapper = styled.header`
   }
 `
 
-const Header: React.FC = () => {
-  const location = useLocation()
-
-  const { from } = location.state || { from: { pathname: '/' } }
-
-  return (
-    <Wrapper>
-      <nav>
-        <Link className="logo" to="/">
-          App Logo and Link
-        </Link>
-        <ul className="nav-links">
-          <li>
-            <Link to={from.pathname}>Somewhere 1</Link>
-          </li>
-          <li>
-            <Link to={{ pathname: '/', state: { from: location } }}>Somewhere 2</Link>
-          </li>
-        </ul>
-      </nav>
-      <div className="header-title">
-        <h1>Example App</h1>
-        <h3>Subtitle</h3>
-      </div>
-    </Wrapper>
-  )
-}
+const Header: React.FC = () => (
+  <Wrapper>
+    <div className="header-title">
+      <h1>Example App</h1>
+      <h3>Subtitle</h3>
+    </div>
+  </Wrapper>
+)
 
 export default Header

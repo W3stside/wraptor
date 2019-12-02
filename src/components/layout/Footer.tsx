@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
 const Wrapper = styled.footer`
   display: flex;
@@ -39,12 +38,8 @@ const Wrapper = styled.footer`
 const Footer: React.FC = () => (
   <Wrapper>
     <ul>
-      <li>
-        <Link to="/about">About Example App</Link>
-      </li>
-      <li>
-        <Link to="/source-code">Some other link</Link>
-      </li>
+      <li>About</li>
+      <li>Some Other Links</li>
     </ul>
     <div className="version">App Version: {VERSION}</div>
   </Wrapper>
