@@ -5,9 +5,6 @@ import { hot } from 'react-hot-loader/root'
 import React from 'react'
 import Web3 from 'web3'
 
-// SCSS
-import GlobalStyles from './GlobalStyles'
-
 import WraptorComponent from 'components/WraptorComponent'
 import { FlexContainer } from 'components/styled'
 
@@ -22,7 +19,6 @@ const App: React.FC = () => {
   const web3Loaded = useWindowLoaded()
   return web3Loaded ? (
     <>
-      <GlobalStyles />
       <h3>WRAPTOR</h3>
       <FlexContainer>
         <h5>Token Wraptor:</h5>
