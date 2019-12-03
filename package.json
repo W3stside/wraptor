@@ -1,24 +1,40 @@
 {
-  "name": "wraptor",
+  "name": "@w3stside/wraptor",
   "version": "0.0.1",
   "description": "ETH > WETH Wrapper service - also supports (beta) ERC20 tokens",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "lib-esm/index.js",
+  "jsnext:main": "lib-esm/index.js",
+  "types": "lib-esm/index.d.ts",
+  "sideEffects": false,
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w3stside/wraptor.git"
+  },
+  "files": [
+    "lib",
+    "lib-esm"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/w3stside/wraptor/issues"
+  },
+  "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --mode development --hot",
-    "mock": "NODE_ENV=development MOCK=true webpack-dashboard -- webpack-dev-server --mode development --hot",
-    "build": "rimraf ./dist && NODE_ENV=production webpack --mode production",
+    "start": "npm run install:examples && npm run start:example-ts",
+    "start:example-ts": "npm --prefix ./examples/cra/ start",
+    "install:examples": "npm run build && npm --prefix ./examples/cra/ install",
+    "build": "rimraf ./lib ./lib-esm && npm run build:commonjs && npm run build:esm",
+    "build:commonjs": "tsc",
+    "build:esm": "tsc -m es6 -t esnext --outDir lib-esm",
     "lint": "eslint src --ext .ts,.tsx,.js",
     "lint:fix": "eslint --fix . --ext .ts,.tsx,.js",
     "stats": "NODE_ENV=production webpack --mode production --env.stats --profile --json > stats.json && webpack-bundle-analyzer ./stats.json ./dist",
     "test": "MOCK=true jest",
-    "test-coverage": "MOCK=true jest --coverage && cat ./coverage/lcov.info | coveralls",
-    "verify": "yarn lint && yarn test",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn verify"
-    }
   },
   "jest": {
     "roots": [
