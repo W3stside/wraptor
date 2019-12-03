@@ -2,47 +2,42 @@
 import Web3 from 'web3'
 import { AbiItem } from 'web3-utils'
 import { Contract } from 'web3-eth-contract'
-import { Eth } from 'web3-eth'
 import { TransactionReceipt } from 'web3-core'
 
-export interface ExampleApiInterface {
-  somePublicMethod(): string
-  someOtherPublicMethodCallingGetter(): string
-}
+import { CSSObject } from 'styled-components'
 
-export interface BaseWraptorParams {
-  provider:
-    | Web3
-    | {
-        currentProvider: {
-          constructor: Function
-        }
-        eth: Eth
-      }
+export interface WraptorComponentProps {
+  type?: 'ETH' | 'TOKEN'
+  provider: Web3
   contractAddress: string
   userAddress: string
-  showTestData?: boolean
+  // style
+  customStyle?: CSSObject
+  buttonLabels?: {
+    showAllowance: string
+    showBalance: string
+    approve: string
+    wrap?: string
+  }
+  fixedNumberAmount?: number
 }
 
-export interface TokenWraptorParams extends BaseWraptorParams {
-  contractAbi: AbiItem[]
+export interface WraptorParams {
+  provider: Web3
+  contractAddress: string
+  userAddress: string
 }
 
-interface BaseWraptor {
+export interface Wraptor {
   userBalanceWei: string
   userAllowanceWei: string
-  getUserBalance: () => Promise<void>
-  getUserAllowance: () => Promise<void>
+  getBalance: () => Promise<void>
+  getAllowance: () => Promise<void>
+  approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
 }
 
-export interface EthWraptor extends BaseWraptor {
-  approveEther: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
-  wrapEther: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
-}
-
-export interface TokenWraptor extends BaseWraptor {
-  approveToken: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
-  // wrapToken: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
+export interface EthWraptor extends Wraptor {
+  wrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
 }
 
 export interface TargetValueInterface {

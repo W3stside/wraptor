@@ -1,51 +1,44 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'types'
 
-import React, { useEffect, useState } from 'react'
 import { hot } from 'react-hot-loader/root'
+import React from 'react'
+import Web3 from 'web3'
 
 // SCSS
-import GlobalStyles from './components/layout/GlobalStyles'
-// Main layout
-import Layout from 'components/layout/'
-// Pages
-import Wraptor from 'components/Wraptor'
+import GlobalStyles from './GlobalStyles'
 
-import Web3 from 'web3'
-import Erc20Abi from 'abi/ERC20Abi'
-import ETHWraptor from 'components/ETHWraptor'
+import WraptorComponent from 'components/WraptorComponent'
+import { FlexContainer } from 'components/styled'
 
-// TEST DATA
-const RINKEBY_WETH = '0xc778417e063141139fce010982780140aa0cd5ab'
-const INITIAL_INFURA_ENDPOINT = 'wss://rinkeby.infura.io/ws/v3/8b4d9b4306294d2e92e0775ff1075066'
-// @ts-ignore
-const provider = new Web3(window?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
-const USER_ADDRESS = '0xfa3a5ba1864C4567aC77D50EcD91a2AaE92B650D'
+import useWindowLoaded from 'hooks/useWindowLoaded'
 
-const windowLoad = new Promise((accept, reject) => {
-  if (!window) reject('No window')
-  window.addEventListener('load', function listener() {
-    window.removeEventListener('load', listener)
-    return accept('Window loaded')
-  })
-})
+import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from 'const'
+
+const provider = new Web3((window as any)?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 
 // App
 const App: React.FC = () => {
-  const [web3Loaded, setWeb3Loaded] = useState(false)
-  useEffect(() => {
-    windowLoad.then((res: unknown): void => console.debug(res)).then(() => setWeb3Loaded(true))
-  })
+  const web3Loaded = useWindowLoaded()
   return web3Loaded ? (
     <>
       <GlobalStyles />
-      <Layout>
-        <h3>WRAPTOR</h3>
+      <h3>WRAPTOR</h3>
+      <FlexContainer>
         <h5>Token Wraptor:</h5>
-        <Wraptor contractAbi={Erc20Abi} contractAddress={RINKEBY_WETH} provider={provider} userAddress={USER_ADDRESS} />
+        <WraptorComponent type="TOKEN" contractAddress={RINKEBY_GNO} provider={provider} userAddress={USER_ADDRESS} />
         <h5>ETH Wraptor:</h5>
-        <ETHWraptor contractAddress={RINKEBY_WETH} provider={provider} userAddress={USER_ADDRESS} />
-      </Layout>
+        <WraptorComponent
+          type="ETH"
+          contractAddress={RINKEBY_WETH}
+          provider={provider}
+          userAddress={USER_ADDRESS}
+          customStyle={{
+            width: 'auto',
+            background: '#fff',
+          }}
+        />
+      </FlexContainer>
     </>
   ) : null
 }

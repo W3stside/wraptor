@@ -1,36 +1,45 @@
 import { useState, useEffect } from 'react'
-
-import { TokenWraptorParams, Contract, TransactionReceipt, TokenWraptor } from 'types'
 import { toWei } from 'web3-utils'
 
-// Misc
-import ERC20Abi from 'abi/ERC20Abi'
+// WETH9 Abi (Canonical WETH)
+import WETH9Abi from 'abi/WETH9Abi'
+// ERC20 Abi
+import Erc20Abi from 'abi/ERC20Abi'
 
-export default ({
-  provider,
-  contractAbi = ERC20Abi,
-  contractAddress,
-  userAddress,
-}: TokenWraptorParams): TokenWraptor => {
+import { TOKEN, ETH } from 'const'
+import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from 'types'
+
+function useWraptor(type: undefined, { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
+function useWraptor(type: 'ETH', { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
+function useWraptor(type: 'TOKEN', { provider, contractAddress, userAddress }: WraptorParams): Wraptor
+function useWraptor(
+  type: 'ETH' | 'TOKEN' | undefined,
+  { provider, contractAddress, userAddress }: WraptorParams,
+): EthWraptor | Wraptor {
   const [contract, setContract] = useState<Contract>()
   // Methods and return values
   const [userBalanceWei, setUserBalanceWei] = useState()
   const [userAllowanceWei, setUserAllowanceWei] = useState()
 
+  // Load contract on mount
   useEffect(() => {
     const loadContract = async (): Promise<void> => {
-      const contract = new provider.eth.Contract(contractAbi, contractAddress)
+      const finalContractAbi = type === TOKEN ? Erc20Abi : WETH9Abi
+      const contract = new provider.eth.Contract(finalContractAbi, contractAddress)
 
       return setContract(contract)
     }
     loadContract()
-  }, [contractAbi, contractAddress, provider.eth.Contract])
+  }, [contractAddress, provider.eth.Contract, type])
 
-  // Private
+  // *****************************************************
+  // PRIVATE METHODS
   const _getUserBalance = async (): Promise<string> =>
     contract?.methods?.balanceOf(userAddress).call({ from: userAddress })
+
   const _getUserAllowance = async (): Promise<string> =>
     contract?.methods?.allowance(userAddress, contract.options.address).call({ from: userAddress })
+
   const _approve = async ({
     spenderAddress,
     amount,
@@ -38,36 +47,51 @@ export default ({
     spenderAddress: string
     amount: string
   }): Promise<TransactionReceipt> => contract?.methods?.approve(spenderAddress, amount).send({ from: userAddress })
-  // const _wrap = async (): Promise<string> =>
-  //   contract?.methods?.allowance(userAddress, contract.options.address).call({ from: userAddress })
 
-  // Public
-  const getUserBalance = async (): Promise<void> => {
+  const _deposit = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
+    contract?.methods?.deposit().send({ from: userAddress, value: amount })
+
+  // *****************************************************
+  // PUBLIC METHODS
+
+  const getBalance = async (): Promise<void> => {
     const amount = await _getUserBalance()
 
     return setUserBalanceWei(amount)
   }
-  const getUserAllowance = async (): Promise<void> => {
+
+  const getAllowance = async (): Promise<void> => {
     const amount = await _getUserAllowance()
 
     return setUserAllowanceWei(amount)
   }
-  const approveToken = async ({
+
+  const approve = async ({
     spenderAddress = contract?.options.address,
     amount,
   }: {
     spenderAddress?: string
     amount: string
   }): Promise<TransactionReceipt> => {
-    if (!spenderAddress) throw new Error('Blah')
+    // TODO: change with assert
+    if (!spenderAddress) throw new Error('No spender address specified, aborting.')
 
     const formattedAmount = toWei(amount)
     return _approve({ spenderAddress, amount: formattedAmount })
   }
-  // const wrapToken = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
-  //   const formattedAmount = toWei(amount)
-  //   // return _wrap({ spenderAddress, amount: formattedAmount })
-  // }
 
-  return { userBalanceWei, getUserBalance, userAllowanceWei, getUserAllowance, approveToken }
+  const wrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
+    const formattedAmount = toWei(amount)
+    return _deposit({ amount: formattedAmount })
+  }
+
+  // Return logic
+  const baseReturn = { userBalanceWei, getBalance, userAllowanceWei, getAllowance, approve }
+
+  // Return ETH wrapping token API with wrap e.g deposit function
+  if (!type || type === ETH) return { ...baseReturn, wrap }
+  // Return Token wraptor without wrap e.g deposit function
+  return baseReturn
 }
+
+export default useWraptor
