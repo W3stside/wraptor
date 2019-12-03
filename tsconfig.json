@@ -28,9 +28,9 @@
       "skipLibCheck": true,
       "suppressImplicitAnyIndexErrors": true,
       "types": [
-          "jest",
           "node"
-      ]
+      ],
+      "baseUrl": "./src/"
   },
   "include": [
       "src/index.ts",
