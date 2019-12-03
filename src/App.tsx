@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import 'types'
+import './types'
 
 import { hot } from 'react-hot-loader/root'
 import React from 'react'
 import Web3 from 'web3'
 
-import WraptorComponent from 'components/WraptorComponent'
-import { FlexContainer } from 'components/styled'
+import WraptorComponent from './components/WraptorComponent'
+import { FlexContainer } from './components/styled'
 
-import useWindowLoaded from 'hooks/useWindowLoaded'
+import useWindowLoaded from './hooks/useWindowLoaded'
 
-import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from 'const'
+import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from './const'
 
 const provider = new Web3((window as any)?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 

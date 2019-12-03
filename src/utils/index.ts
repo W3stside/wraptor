@@ -1,9 +1,9 @@
 import { AbiItem } from 'web3-utils'
 // Abis
-import Erc20Abi from 'abi/ERC20Abi'
-import WETH9Abi from 'abi/WETH9Abi'
+import Erc20Abi from '../abi/ERC20Abi'
+import WETH9Abi from '../abi/WETH9Abi'
 // Constants
-import { ETH, TOKEN } from 'const'
+import { ETH, TOKEN } from '../const'
 
 export function checkTypeAndAbi(type?: string, abi?: AbiItem[]): AbiItem[] {
   if (abi) return abi

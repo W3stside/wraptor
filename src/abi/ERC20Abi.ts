@@ -1,4 +1,4 @@
-import { AbiItem } from 'types'
+import { AbiItem } from '../types'
 
 const Erc20Abi: AbiItem[] = [
   {

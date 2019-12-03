@@ -30,7 +30,6 @@
       "types": [
           "node"
       ],
-      "baseUrl": "./src/"
   },
   "include": [
       "src/index.ts",

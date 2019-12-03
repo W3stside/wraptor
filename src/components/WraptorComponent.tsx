@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
 
 // Types
-import { TargetValueInterface, WraptorComponentProps } from 'types'
+import { TargetValueInterface, WraptorComponentProps } from '../types'
 
 // useWraptor Hook
-import useWraptor from 'hooks/useWraptor'
+import useWraptor from '../hooks/useWraptor'
 // Error Comp
 import ErrorMessage from './ErrorMessage'
-import { tokenName } from 'utils'
+import { tokenName } from '../utils'
 import { FlexContainer, WraptorContainer, WraptorCode, WraptorInput, WraptorButton } from './styled'
 
 const WraptorComponent: React.FC<WraptorComponentProps> = ({

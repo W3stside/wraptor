@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { toWei } from 'web3-utils'
 
 // WETH9 Abi (Canonical WETH)
-import WETH9Abi from 'abi/WETH9Abi'
+import WETH9Abi from '../abi/WETH9Abi'
 // ERC20 Abi
-import Erc20Abi from 'abi/ERC20Abi'
+import Erc20Abi from '../abi/ERC20Abi'
 
-import { TOKEN, ETH } from 'const'
-import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from 'types'
+import { TOKEN, ETH } from '../const'
+import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from '../types'
 
 function useWraptor(type: undefined, { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
 function useWraptor(type: 'ETH', { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
