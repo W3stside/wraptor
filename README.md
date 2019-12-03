@@ -5,11 +5,93 @@
 <!-- [![Build Status](https://travis-ci.org/gnosis/dex-react.svg?branch=develop)](https://travis-ci.org/gnosis/dex-react) -->
 <!-- [![Coverage Status](https://coveralls.io/repos/github/gnosis/dex-react/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/dex-react?branch=develop) -->
 
-# React 16.8+ (hooks) & Typescript 3.72+ Web App
+# 🦖 WRAPTOR - Ether > WETH Wrapper
+#### Built on React 16.8+ (hooks) & Typescript 3.72+
 
-This app will allow to:
+Handles wrapping Ether to Wrapped Ether (WETH) via `useWraptor` hook and/or the `WraptorComponent`
 
-- Do stuff
+## Using
+1. Hook:
+
+#### Type: 'ETH' | undefined
+```ts
+// ETH > WETH Wrapping hook
+useWraptor(type?: 'ETH', {
+    provider,
+    contractAddress,
+    userAddress,
+  })
+
+// NOTE: leaving out type (i.e undefined) is an alias
+
+/** Returns WETH wrapper API:
+
+* interface Wraptor {
+*   userBalanceWei: string
+*   userAllowanceWei: string
+*   getBalance: () => Promise<void>
+*   getAllowance: () => Promise<void>
+*   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
+*   wrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
+* }
+
+**/
+```
+
+#### Type: 'TOKEN'
+```ts
+// mini Token API hook
+useWraptor(type: 'TOKEN', {
+    provider,
+    contractAddress,
+    userAddress,
+  })
+
+/** Returns Token API:
+
+* interface TokenWraptor {
+*   userBalanceWei: string
+*   userAllowanceWei: string
+*   getBalance: () => Promise<void>
+*   getAllowance: () => Promise<void>
+*   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
+* }
+
+**/
+
+// NOTE: Cannot wrap with this API - just approve and get constants
+```
+
+2. Component
+```ts
+...
+import WraptorComponent from 'components/WraptorComponent'
+import { FlexColumnContainer } from 'components/styled'
+
+import useWindowLoaded from 'hooks/useWindowLoaded'
+
+import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from 'const'
+
+const provider = new Web3(window?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
+
+// App
+const App: React.FC = () => {
+  const web3Loaded = useWindowLoaded()
+  return web3Loaded ? (
+    <>
+      <GlobalStyles />
+      <h3>WRAPTOR</h3>
+      <FlexColumnContainer width="900px">
+        <h5>Token Wraptor:</h5>
+        <WraptorComponent type="TOKEN" contractAddress={RINKEBY_GNO} provider={provider} userAddress={USER_ADDRESS} />
+        <h5>ETH Wraptor:</h5>
+        <WraptorComponent type="ETH" contractAddress={RINKEBY_WETH} provider={provider} userAddress={USER_ADDRESS} />
+      </FlexColumnContainer>
+    </>
+  ) : null
+}
+...
+```
 
 ## Running locally
 
