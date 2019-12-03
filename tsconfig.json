@@ -1,38 +1,38 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "target": "es5",
-    "downlevelIteration": true,
-    "importHelpers": true,
-    "sourceMap": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "jsx": "react",
-    "resolveJsonModule": true,
-    "allowJs": false,
-    "checkJs": false,
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016",
-      "es2017",
-      "esnext"
-    ],
-    "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
-    "noImplicitAny": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "types": [
-      "jest",
-      "node"
-    ],
-    "baseUrl": "./src/"
-  }
+      "outDir": "lib",
+      "declaration": true,
+      "declarationMap": true,
+      "esModuleInterop": true,
+      "target": "es6",
+      "downlevelIteration": true,
+      "importHelpers": true,
+      "sourceMap": true,
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "jsx": "react",
+      "allowJs": false,
+      "checkJs": false,
+      "strict": true,
+      "lib": [
+          "dom",
+          "es6",
+          "es7",
+          "esnext"
+      ],
+      "forceConsistentCasingInFileNames": true,
+      "experimentalDecorators": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noUnusedLocals": true,
+      "skipLibCheck": true,
+      "suppressImplicitAnyIndexErrors": true,
+      "types": [
+          "jest",
+          "node"
+      ]
+  },
+  "include": [
+      "src/index.ts",
+  ]
 }
