@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import './types'
+import '../src/types'
 
-import { hot } from 'react-hot-loader/root'
 import React from 'react'
 import Web3 from 'web3'
 
-import WraptorComponent from './components/WraptorComponent'
-import { FlexContainer } from './components/styled'
+import WraptorComponent from '../src/components/WraptorComponent'
+import { FlexContainer } from '../src/components/styled'
 
-import useWindowLoaded from './hooks/useWindowLoaded'
+import useWindowLoaded from '../src/hooks/useWindowLoaded'
 
-import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from './const'
+import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from '../src/const'
 
 const provider = new Web3((window as any)?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 
@@ -39,4 +38,4 @@ const App: React.FC = () => {
   ) : null
 }
 
-export default hot(App)
+export default App
