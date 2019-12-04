@@ -23,18 +23,11 @@
   "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
     "clean": "rm -rf lib",
-    "clean:example": "rm -rf example/build",
-    "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
-    "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
-    "bootstrap": "npm install && cd example && npm run bootstrap",
-    "start": "npm run check && cd example && npm run start",
-    "build": "yarn clean && webpack --watch",
-    "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
-    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
+    "build": "yarn clean && webpack",
+    "build:watch": "yarn clean && webpack --watch",
     "lint": "tslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
-    "routine": "npm run clean:all && npm run bootstrap && npm run check"
+    "pre-publish": "yarn clean && yarn build"
   },
   "author": "W3stside <doohhello@gmail.com>",
   "dependencies": {
