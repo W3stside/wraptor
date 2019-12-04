@@ -3,12 +3,10 @@
   "version": "0.1.1",
   "description": "ETH > WETH Wrapper service - also supports (beta) ERC20 tokens",
   "main": "lib/index.js",
-  "module": "lib-esm/index.js",
-  "jsnext:main": "lib-esm/index.js",
-  "types": "lib-esm/index.d.ts",
   "sideEffects": false,
   "directories": {
-    "test": "tests"
+    "lib": "lib",
+    "test": "test"
   },
   "repository": {
     "type": "git",
@@ -16,7 +14,7 @@
   },
   "files": [
     "lib",
-    "lib-esm"
+    "src"
   ],
   "license": "MIT",
   "bugs": {
@@ -24,17 +22,19 @@
   },
   "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
-    "start": "yarn install:examples && yarn start:example-ts",
-    "start:example-ts": "npm --prefix ./examples/cra/ start",
-    "install:examples": "yarn build && npm --prefix ./examples/cra/ install",
-    "build": "rimraf ./lib ./lib-esm && yarn build:commonjs && yarn build:esm",
-    "build:commonjs": "tsc",
-    "build:esm": "tsc -m es6 -t es2020 --outDir lib-esm",
-    "lint": "eslint src --ext .ts,.tsx,.js",
-    "lint:fix": "eslint --fix . --ext .ts,.tsx,.js",
-    "stats": "NODE_ENV=production webpack --mode production --env.stats --profile --json > stats.json && webpack-bundle-analyzer ./stats.json ./dist",
-    "test": "MOCK=true jest",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
+    "clean": "rm -rf lib",
+    "clean:example": "rm -rf example/build",
+    "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
+    "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
+    "bootstrap": "npm install && cd example && npm run bootstrap",
+    "start": "npm run check && cd example && npm run start",
+    "build": "yarn clean && webpack --watch",
+    "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
+    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
+    "lint": "tslint ./src/*.ts ./src/**/*.ts",
+    "format": "prettier ./src/*.ts ./src/**/*.ts --write",
+    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
+    "routine": "npm run clean:all && npm run bootstrap && npm run check"
   },
   "author": "W3stside <doohhello@gmail.com>",
   "dependencies": {
@@ -42,12 +42,17 @@
     "@fortawesome/free-regular-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "styled-components": "^4.3.2",
-    "web3-utils": "^1.2.4"
+    "web3-utils": "^1.2.4",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "@fortawesome/fontawesome-common-types": "^0.2.25",
     "@types/node": "^12.7.5",
     "@types/react": "^16.8.23",
@@ -65,14 +70,18 @@
     "eslint-plugin-react-hooks": "^2.0.1",
     "eslint-utils": ">=1.4.1",
     "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2",
     "rimraf": "^3.0.0",
-    "style-loader": "^1.0.0",
-    "ts-jest": "^24.0.2",
     "ts-loader": "^6.1.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "webpack-cli": "^3.2.1",
+    "webpack": "4.19.1"
   },
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": ">= 16.8.0",
+    "react-dom": ">= 16.8.0",
+    "styled-components": ">= 4"
   }
 }
