@@ -23,6 +23,7 @@
   "scripts": {
     "start": "cd ./example && NODE_ENV=development npx webpack-dev-server --mode development --hot",
     "clean": "rm -rf lib",
+    "build": "yarn build:prod",
     "build:dev": "yarn clean && webpack --mode=development",
     "build:prod": "yarn clean && webpack --mode=production",
     "build:watch": "yarn clean && webpack --watch",
