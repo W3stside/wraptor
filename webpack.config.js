@@ -6,12 +6,12 @@ module.exports = {
     index: './src/index.ts',
   },
   externals: {
-      "styled-components": {
-        commonjs: "styled-components",
-        commonjs2: "styled-components",
-        amd: "styled-components",
-      },
+    'styled-components': {
+      commonjs: 'styled-components',
+      commonjs2: 'styled-components',
+      amd: 'styled-components',
     },
+  },
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: '[name].js',

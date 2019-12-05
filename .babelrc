@@ -6,6 +6,19 @@
         "useBuiltIns": "usage"
       }
     ],
+    "@babel/preset-react",
     "@babel/typescript"
-  ]
+  ],
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-class-properties",
+    [
+      "babel-plugin-styled-components",
+      {
+        "pure": true
+      }
+    ],
+    "react-hot-loader/babel"
+  ] 
 }

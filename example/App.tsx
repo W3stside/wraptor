@@ -11,6 +11,7 @@ import useWindowLoaded from '../src/hooks/useWindowLoaded'
 import useWraptor from '../src/hooks/useWraptor'
 
 import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from '../src/const'
+import ReactDOM from 'react-dom'
 
 const provider = new Web3((window as any)?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 
@@ -96,4 +97,5 @@ const App: React.FC = () => {
   ) : null
 }
 
-export default App
+const root = document.getElementById('root')
+ReactDOM.render(<App />, root)
