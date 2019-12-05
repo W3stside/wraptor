@@ -18,6 +18,7 @@ export interface WraptorComponentProps {
     showBalance: string
     approve: string
     wrap?: string
+    unwrap?: string
   }
   tokenDisplay?: {
     name: string
@@ -46,6 +47,7 @@ export interface Wraptor {
 
 export interface EthWraptor extends Wraptor {
   wrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
+  unwrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
 }
 
 export interface TargetValueInterface {
