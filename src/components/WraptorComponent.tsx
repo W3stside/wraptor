@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner, faLevelUpAlt, faLevelDownAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 // Types
 import { TargetValueInterface, WraptorComponentProps } from 'types'
@@ -138,6 +139,12 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
           onClick={(): Promise<void> => handleApproveSubmit(approvalAmount)}
         >
           {buttonLabels.approve}
+          {'  '}
+          <FontAwesomeIcon
+            icon={disabledButton === 'APPROVE' ? faSpinner : faCheck}
+            size="sm"
+            spin={disabledButton === 'APPROVE'}
+          />
         </WraptorButton>
         <WraptorInput type="number" value={approvalAmount} onChange={handleApproveChange} />
       </FlexContainer>
@@ -148,7 +155,12 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             disabled={disabledButton === 'WRAP' || !wrappingAmount}
             onClick={(): Promise<void> => handleWrappingSubmit(wrappingAmount)}
           >
-            {buttonLabels.wrap}
+            {buttonLabels.wrap}{' '}
+            <FontAwesomeIcon
+              icon={disabledButton === 'WRAP' ? faSpinner : faLevelDownAlt}
+              size="sm"
+              spin={disabledButton === 'WRAP'}
+            />
           </WraptorButton>
           <WraptorInput
             type="number"
@@ -165,7 +177,12 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             disabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
             onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
           >
-            {disabledButton === 'UNWRAP' ? faSpinner : buttonLabels.unwrap}
+            {buttonLabels.unwrap}{' '}
+            <FontAwesomeIcon
+              icon={disabledButton === 'UNWRAP' ? faSpinner : faLevelUpAlt}
+              size="sm"
+              spin={disabledButton === 'UNWRAP'}
+            />
           </WraptorButton>
           <WraptorInput
             type="number"
