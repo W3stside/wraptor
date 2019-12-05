@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "sideEffects": false,
   "directories": {
-    "lib": "lib",
-    "test": "test"
+    "lib": "lib"
   },
   "repository": {
     "type": "git",

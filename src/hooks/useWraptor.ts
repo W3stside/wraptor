@@ -8,21 +8,26 @@ import Erc20Abi from '../abi/ERC20Abi'
 
 import { TOKEN, ETH } from '../const'
 import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from '../types'
+import { assert } from '../utils'
 
-function useWraptor(type: undefined, { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
-function useWraptor(type: 'ETH', { provider, contractAddress, userAddress }: WraptorParams): EthWraptor
-function useWraptor(type: 'TOKEN', { provider, contractAddress, userAddress }: WraptorParams): Wraptor
+function useWraptor({ provider, contractAddress, userAddress }: WraptorParams, type: 'TOKEN'): Wraptor
+function useWraptor({ provider, contractAddress, userAddress }: WraptorParams, type?: 'ETH'): EthWraptor
+function useWraptor({ provider, contractAddress, userAddress }: WraptorParams, type?: string): EthWraptor
 function useWraptor(
-  type: 'ETH' | 'TOKEN' | undefined,
   { provider, contractAddress, userAddress }: WraptorParams,
-): EthWraptor | Wraptor {
+  type?: 'ETH' | 'TOKEN' | string,
+): EthWraptor | Wraptor | null {
+  if (type && type !== ETH && type !== TOKEN) console.warn(`${type} is not supported, defaulting to ETH Wraptor`)
+
   const [contract, setContract] = useState<Contract>()
-  // Methods and return values
+  const [tokenDisplay, setTokenDisplay] = useState()
   const [userBalanceWei, setUserBalanceWei] = useState()
   const [userAllowanceWei, setUserAllowanceWei] = useState()
 
   // Load contract on mount
   useEffect(() => {
+    if (!provider || !provider.eth) return
+
     const loadContract = async (): Promise<void> => {
       const finalContractAbi = type === TOKEN ? Erc20Abi : WETH9Abi
       const contract = new provider.eth.Contract(finalContractAbi, contractAddress)
@@ -30,10 +35,16 @@ function useWraptor(
       return setContract(contract)
     }
     loadContract()
-  }, [contractAddress, provider.eth.Contract, type])
+  }, [contractAddress, type, provider])
+
+  if (!provider || !contractAddress || !userAddress) return null
 
   // *****************************************************
   // PRIVATE METHODS
+  const _getName = async (): Promise<string> => contract?.methods?.name().call()
+  const _getSymbol = async (): Promise<string> => contract?.methods?.symbol().call()
+  const _getDecimals = async (): Promise<string> => contract?.methods?.decimals().call()
+
   const _getUserBalance = async (): Promise<string> =>
     contract?.methods?.balanceOf(userAddress).call({ from: userAddress })
 
@@ -53,6 +64,19 @@ function useWraptor(
 
   // *****************************************************
   // PUBLIC METHODS
+  const getTokenDisplay = async (): Promise<void> => {
+    const [name, symbol, decimals] = await Promise.all([
+      _getName().catch(() => undefined),
+      _getSymbol().catch(() => undefined),
+      _getDecimals().catch(() => undefined),
+    ])
+
+    return setTokenDisplay({
+      name,
+      symbol,
+      decimals,
+    })
+  }
 
   const getBalance = async (): Promise<void> => {
     const amount = await _getUserBalance()
@@ -73,8 +97,7 @@ function useWraptor(
     spenderAddress?: string
     amount: string
   }): Promise<TransactionReceipt> => {
-    // TODO: change with assert
-    if (!spenderAddress) throw new Error('No spender address specified, aborting.')
+    assert(spenderAddress, 'Must have a spender address')
 
     const formattedAmount = toWei(amount)
     return _approve({ spenderAddress, amount: formattedAmount })
@@ -86,12 +109,21 @@ function useWraptor(
   }
 
   // Return logic
-  const baseReturn = { userBalanceWei, getBalance, userAllowanceWei, getAllowance, approve }
+  const baseReturn: Wraptor = {
+    contract,
+    tokenDisplay,
+    userBalanceWei,
+    getBalance,
+    userAllowanceWei,
+    getAllowance,
+    getTokenDisplay,
+    approve,
+  }
 
-  // Return ETH wrapping token API with wrap e.g deposit function
-  if (!type || type === ETH) return { ...baseReturn, wrap }
   // Return Token wraptor without wrap e.g deposit function
-  return baseReturn
+  if (type === TOKEN) return { ...baseReturn, tokenDisplay, getTokenDisplay }
+  // Return ETH wrapping token API with wrap e.g deposit function
+  return { ...baseReturn, wrap } as EthWraptor
 }
 
 export default useWraptor

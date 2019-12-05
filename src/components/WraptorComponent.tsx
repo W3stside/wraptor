@@ -8,8 +8,10 @@ import { TargetValueInterface, WraptorComponentProps } from '../types'
 import useWraptor from '../hooks/useWraptor'
 // Error Comp
 import ErrorMessage from './ErrorMessage'
-import { tokenName } from '../utils'
 import { FlexContainer, WraptorContainer, WraptorCode, WraptorInput, WraptorButton } from './styled'
+
+import { tokenName } from '../utils'
+import { toNativeDecimals } from '../utils/format'
 
 const WraptorComponent: React.FC<WraptorComponentProps> = ({
   type,
@@ -23,6 +25,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     approve: 'Approve',
     wrap: 'Wrap',
   },
+  tokenDisplay,
   fixedNumberAmount = 4,
 }: WraptorComponentProps) => {
   const [approvalAmount, setApprovalAmount] = useState('')
@@ -30,15 +33,14 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   const [disabledButton, setDisabledButton] = useState<'WRAP' | 'APPROVE'>()
   const [error, setError] = useState()
 
-  // TS hates the tuple conditional type from props passed into
-  // overloaded useWraptor definition... fix somehow
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  const wraptorApi = useWraptor(type, {
-    provider,
-    contractAddress,
-    userAddress,
-  })
+  const wraptorApi = useWraptor(
+    {
+      provider,
+      contractAddress,
+      userAddress,
+    },
+    type,
+  )
 
   const { userBalanceWei, getBalance, userAllowanceWei, getAllowance, approve } = wraptorApi
 
@@ -87,13 +89,21 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getAllowance}>{buttonLabels.showAllowance}</WraptorButton>
         <WraptorCode>
-          {userAllowanceWei ? `${(+userAllowanceWei / 10 ** 18).toFixed(fixedNumberAmount)} ${tokenName(type)}` : '-'}
+          {userAllowanceWei
+            ? `${toNativeDecimals(userAllowanceWei, tokenDisplay?.decimals).toFixed(
+                fixedNumberAmount,
+              )} ${tokenDisplay?.symbol || tokenName(type)}`
+            : '-'}
         </WraptorCode>
       </FlexContainer>
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getBalance}>{buttonLabels.showBalance}</WraptorButton>
         <WraptorCode>
-          {userBalanceWei ? `${(+userBalanceWei / 10 ** 18).toFixed(fixedNumberAmount)} ${tokenName(type)}` : '-'}
+          {userBalanceWei
+            ? `${toNativeDecimals(userBalanceWei, tokenDisplay?.decimals).toFixed(
+                fixedNumberAmount,
+              )} ${tokenDisplay?.symbol || tokenName(type)}`
+            : '-'}
         </WraptorCode>
       </FlexContainer>
       <FlexContainer flow="row wrap" justify="center">
