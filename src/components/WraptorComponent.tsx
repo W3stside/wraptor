@@ -10,8 +10,7 @@ import useWraptor from '../hooks/useWraptor'
 import ErrorMessage from './ErrorMessage'
 import { FlexContainer, WraptorContainer, WraptorCode, WraptorInput, WraptorButton } from './styled'
 
-import { tokenName } from '../utils'
-import { toNativeDecimals } from '../utils/format'
+import { tokenName, toNativeDecimals } from '../utils'
 
 const WraptorComponent: React.FC<WraptorComponentProps> = ({
   type,
