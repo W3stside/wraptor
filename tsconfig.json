@@ -30,7 +30,6 @@
     "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "types": [
-      "jest",
       "node"
     ],
     "baseUrl": "./src/"

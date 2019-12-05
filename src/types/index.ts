@@ -7,7 +7,7 @@ import { TransactionReceipt } from 'web3-core'
 import { CSSObject } from 'styled-components'
 
 export interface WraptorComponentProps {
-  type?: 'ETH' | 'TOKEN'
+  type: 'ETH' | 'TOKEN'
   provider: Web3
   contractAddress: string
   userAddress: string
@@ -19,20 +19,28 @@ export interface WraptorComponentProps {
     approve: string
     wrap?: string
   }
+  tokenDisplay?: {
+    name: string
+    symbol: string
+    decimals: string | number
+  }
   fixedNumberAmount?: number
 }
 
 export interface WraptorParams {
-  provider: Web3
-  contractAddress: string
-  userAddress: string
+  provider?: Web3
+  contractAddress?: string
+  userAddress?: string
 }
 
 export interface Wraptor {
+  contract?: Contract
+  tokenDisplay: { name?: string; symbol?: string; decimals?: string }
   userBalanceWei: string
   userAllowanceWei: string
   getBalance: () => Promise<void>
   getAllowance: () => Promise<void>
+  getTokenDisplay: () => Promise<void>
   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
 }
 

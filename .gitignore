@@ -7,3 +7,5 @@ dist
 *.log
 coverage
 .env
+lib
+lib-esm

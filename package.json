@@ -10,47 +10,8 @@
     "lint": "eslint src --ext .ts,.tsx,.js",
     "lint:fix": "eslint --fix . --ext .ts,.tsx,.js",
     "stats": "NODE_ENV=production webpack --mode production --env.stats --profile --json > stats.json && webpack-bundle-analyzer ./stats.json ./dist",
-    "test": "MOCK=true jest",
-    "test-coverage": "MOCK=true jest --coverage && cat ./coverage/lcov.info | coveralls",
     "verify": "yarn lint && yarn test",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn verify"
-    }
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>/test"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/setupEnzyme.ts"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/mocks/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/mocks/fileMock.js"
-    },
-    "globalSetup": "<rootDir>/test/globalSetup.ts"
   },
   "author": "W3stside <doohhello@gmail.com>",
   "dependencies": {
@@ -92,10 +53,6 @@
     "babel-plugin-styled-components": "^1.10.6",
     "coveralls": "^3.0.6",
     "css-loader": "^3.2.0",
-    "dotenv": "^8.1.0",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "enzyme-to-json": "^3.4.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.18.2",
@@ -107,9 +64,6 @@
     "file-loader": "^4.2.0",
     "fork-ts-checker-webpack-plugin": "^1.4.3",
     "html-webpack-plugin": "^4.0.0-beta.8",
-    "husky": "^3.0.5",
-    "jest": "^24.9.0",
-    "jest-enzyme": "^7.1.1",
     "prettier": "^1.18.2",
     "react-dev-utils": "^9.0.1",
     "react-test-renderer": "^16.9.0",
