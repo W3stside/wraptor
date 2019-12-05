@@ -74,6 +74,7 @@ export const WraptorButton = styled.button<{ cursorDisabled?: boolean; customSty
 
   :hover {
     background: #7460f8;
+    color: #fff;
   }
 
   &.big {
