@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { unstable_batchedUpdates as batchedUpdate } from 'react-dom'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 // Types
 import { TargetValueInterface, WraptorComponentProps } from '../types'
@@ -23,13 +24,16 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     showBalance: 'Show Balance',
     approve: 'Approve',
     wrap: 'Wrap',
+    unwrap: 'Unwrap',
   },
   tokenDisplay,
   fixedNumberAmount = 4,
 }: WraptorComponentProps) => {
   const [approvalAmount, setApprovalAmount] = useState('')
   const [wrappingAmount, setWrappingAmount] = useState('')
-  const [disabledButton, setDisabledButton] = useState<'WRAP' | 'APPROVE'>()
+  const [unwrappingAmount, setUnwrappingAmount] = useState('')
+
+  const [disabledButton, setDisabledButton] = useState<'WRAP' | 'UNWRAP' | 'APPROVE'>()
   const [error, setError] = useState()
 
   const wraptorApi = useWraptor(
@@ -45,6 +49,8 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
 
   const handleApproveChange = ({ target: { value } }: TargetValueInterface): void => setApprovalAmount(value)
   const handleWrappingChange = ({ target: { value } }: TargetValueInterface): void => setWrappingAmount(value)
+  const handleUnwrappingChange = ({ target: { value } }: TargetValueInterface): void => setUnwrappingAmount(value)
+
   const handleApproveSubmit = async (amount: string): Promise<void> => {
     try {
       batchedUpdate(() => {
@@ -77,6 +83,25 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     } finally {
       batchedUpdate(() => {
         setWrappingAmount('')
+        setDisabledButton(undefined)
+      })
+    }
+  }
+  const handleUnwrappingSubmit = async (amount: string): Promise<void> => {
+    if (!wraptorApi.unwrap) return
+
+    try {
+      batchedUpdate(() => {
+        setError(undefined)
+        setDisabledButton('UNWRAP')
+      })
+      await wraptorApi.unwrap({ amount })
+    } catch (error) {
+      console.error('UNWRAPPING ERROR: ', error)
+      setError(error)
+    } finally {
+      batchedUpdate(() => {
+        setUnwrappingAmount('')
         setDisabledButton(undefined)
       })
     }
@@ -124,7 +149,29 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
           >
             {buttonLabels.wrap}
           </WraptorButton>
-          <WraptorInput type="number" value={wrappingAmount} onChange={handleWrappingChange} />
+          <WraptorInput
+            type="number"
+            value={wrappingAmount}
+            onChange={handleWrappingChange}
+            disabled={disabledButton === 'WRAP'}
+          />
+        </FlexContainer>
+      )}
+      {wraptorApi.unwrap && (
+        <FlexContainer flow="row wrap" justify="center">
+          <WraptorButton
+            cursorDisabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
+            disabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
+            onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
+          >
+            {disabledButton === 'UNWRAP' ? faSpinner : buttonLabels.unwrap}
+          </WraptorButton>
+          <WraptorInput
+            type="number"
+            value={unwrappingAmount}
+            onChange={handleUnwrappingChange}
+            disabled={disabledButton === 'UNWRAP'}
+          />
         </FlexContainer>
       )}
     </WraptorContainer>

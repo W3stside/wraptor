@@ -62,6 +62,9 @@ function useWraptor(
   const _deposit = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
     contract?.methods?.deposit().send({ from: userAddress, value: amount })
 
+  const _withdraw = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
+    contract?.methods?.withdraw(amount).send({ from: userAddress })
+
   // *****************************************************
   // PUBLIC METHODS
   const getTokenDisplay = async (): Promise<void> => {
@@ -108,6 +111,11 @@ function useWraptor(
     return _deposit({ amount: formattedAmount })
   }
 
+  const unwrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
+    const formattedAmount = toWei(amount)
+    return _withdraw({ amount: formattedAmount })
+  }
+
   // Return logic
   const baseReturn: Wraptor = {
     contract,
@@ -121,9 +129,9 @@ function useWraptor(
   }
 
   // Return Token wraptor without wrap e.g deposit function
-  if (type === TOKEN) return { ...baseReturn, tokenDisplay, getTokenDisplay }
+  if (type === TOKEN) return baseReturn
   // Return ETH wrapping token API with wrap e.g deposit function
-  return { ...baseReturn, wrap } as EthWraptor
+  return { ...baseReturn, wrap, unwrap }
 }
 
 export default useWraptor
