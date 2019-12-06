@@ -90,3 +90,48 @@ export const WraptorButton = styled.button<{ cursorDisabled?: boolean; customSty
 
   ${(props): CSSObject | null => props.customStyle || null};
 `
+
+export const ErrorWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffdddd;
+  border-radius: 2px;
+  color: red;
+  font-size: small;
+  font-weight: 600;
+  padding: 0.65rem;
+
+  > code {
+    margin: 0 10px;
+  }
+`
+
+export const ErrorCloseWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000ad;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+
+  > div {
+    display: inline-flex;
+    margin: auto;
+    border-radius: 30px;
+    border: 3px solid white;
+    padding: 5px 10px;
+    color: white;
+    font-weight: 900;
+
+    &::hover {
+      opacity: 1;
+    }
+  }
+`
