@@ -1,6 +1,6 @@
 {
   "name": "@w3stside/wraptor",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "ETH > WETH Wrapper service - also supports (beta) ERC20 tokens",
   "main": "lib/index.js",
   "sideEffects": false,
