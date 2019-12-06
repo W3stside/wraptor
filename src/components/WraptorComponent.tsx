@@ -134,7 +134,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   return (
     <WraptorContainer customStyle={customStyle}>
       {header && typeof header === 'function' ? header() : <h3>{header}</h3>}
-      {error && <ErrorMessage message={error.message} />}
+      {error && <ErrorMessage onClick={(): void => setError(undefined)} message={error.message} />}
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getAllowance}>{buttonLabels.showAllowance}</WraptorButton>
         <WraptorCode>

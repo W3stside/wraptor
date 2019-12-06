@@ -20,8 +20,11 @@ const ErrorWrapper = styled.div`
   }
 `
 
-const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
-  <ErrorWrapper>
+const ErrorMessage: React.FC<{
+  message: string
+  onClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+}> = ({ message, onClick }) => (
+  <ErrorWrapper onClick={onClick}>
     <FontAwesomeIcon icon={faDizzy} size="2x" />
     <code>{message}</code>
   </ErrorWrapper>
