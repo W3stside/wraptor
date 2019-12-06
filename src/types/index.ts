@@ -26,6 +26,7 @@ export interface WraptorComponentProps {
     decimals: string | number
   }
   fixedNumberAmount?: number
+  header?: string | Function
 }
 
 export interface WraptorParams {

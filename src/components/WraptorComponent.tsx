@@ -29,12 +29,17 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   },
   tokenDisplay,
   fixedNumberAmount = 4,
+  header,
 }: WraptorComponentProps) => {
   const [approvalAmount, setApprovalAmount] = useState('')
   const [wrappingAmount, setWrappingAmount] = useState('')
   const [unwrappingAmount, setUnwrappingAmount] = useState('')
 
-  const [disabledButton, setDisabledButton] = useState<'WRAP' | 'UNWRAP' | 'APPROVE'>()
+  const [disabledButton, setDisabledButton] = useState<{ WRAP: boolean; UNWRAP: boolean; APPROVE: boolean }>({
+    WRAP: false,
+    UNWRAP: false,
+    APPROVE: false,
+  })
   const [error, setError] = useState()
 
   const wraptorApi = useWraptor(
@@ -56,7 +61,10 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     try {
       batchedUpdate(() => {
         setError(undefined)
-        setDisabledButton('APPROVE')
+        setDisabledButton(prevState => ({
+          ...prevState,
+          APPROVE: true,
+        }))
       })
       await approve({ amount })
     } catch (error) {
@@ -65,7 +73,10 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     } finally {
       batchedUpdate(() => {
         setApprovalAmount('')
-        setDisabledButton(undefined)
+        setDisabledButton(prevState => ({
+          ...prevState,
+          APPROVE: false,
+        }))
       })
     }
   }
@@ -75,7 +86,10 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     try {
       batchedUpdate(() => {
         setError(undefined)
-        setDisabledButton('WRAP')
+        setDisabledButton(prevState => ({
+          ...prevState,
+          WRAP: true,
+        }))
       })
       await wraptorApi.wrap({ amount })
     } catch (error) {
@@ -84,7 +98,10 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     } finally {
       batchedUpdate(() => {
         setWrappingAmount('')
-        setDisabledButton(undefined)
+        setDisabledButton(prevState => ({
+          ...prevState,
+          WRAP: false,
+        }))
       })
     }
   }
@@ -94,7 +111,10 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     try {
       batchedUpdate(() => {
         setError(undefined)
-        setDisabledButton('UNWRAP')
+        setDisabledButton(prevState => ({
+          ...prevState,
+          UNWRAP: true,
+        }))
       })
       await wraptorApi.unwrap({ amount })
     } catch (error) {
@@ -103,13 +123,17 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     } finally {
       batchedUpdate(() => {
         setUnwrappingAmount('')
-        setDisabledButton(undefined)
+        setDisabledButton(prevState => ({
+          ...prevState,
+          UNWRAP: false,
+        }))
       })
     }
   }
 
   return (
     <WraptorContainer customStyle={customStyle}>
+      {header && typeof header === 'function' ? header() : <h3>{header}</h3>}
       {error && <ErrorMessage message={error.message} />}
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getAllowance}>{buttonLabels.showAllowance}</WraptorButton>
@@ -131,63 +155,71 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             : '-'}
         </WraptorCode>
       </FlexContainer>
+      {/* APPROVE */}
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton
-          cursorDisabled={disabledButton === 'APPROVE' || !approvalAmount}
-          disabled={disabledButton === 'APPROVE' || !approvalAmount || +approvalAmount <= 0}
+          cursorDisabled={disabledButton['APPROVE'] || !approvalAmount}
+          disabled={disabledButton['APPROVE'] || !approvalAmount || +approvalAmount <= 0}
           onClick={(): Promise<void> => handleApproveSubmit(approvalAmount)}
         >
           {buttonLabels.approve}
           {'  '}
           <FontAwesomeIcon
-            icon={disabledButton === 'APPROVE' ? faSpinner : faCheck}
+            icon={disabledButton['APPROVE'] ? faSpinner : faCheck}
             size="xs"
-            spin={disabledButton === 'APPROVE'}
+            spin={disabledButton['APPROVE']}
           />
         </WraptorButton>
-        <WraptorInput type="number" value={approvalAmount} onChange={handleApproveChange} />
+        <WraptorInput
+          type="number"
+          value={approvalAmount}
+          onChange={handleApproveChange}
+          disabled={disabledButton['APPROVE']}
+        />
       </FlexContainer>
+      {/* WRAPPING */}
       {wraptorApi.wrap && (
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
-            cursorDisabled={disabledButton === 'WRAP' || !wrappingAmount}
-            disabled={disabledButton === 'WRAP' || !wrappingAmount || +wrappingAmount <= 0}
+            cursorDisabled={disabledButton['WRAP'] || !wrappingAmount}
+            disabled={disabledButton['WRAP'] || !wrappingAmount || +wrappingAmount <= 0}
             onClick={(): Promise<void> => handleWrappingSubmit(wrappingAmount)}
           >
             {buttonLabels.wrap}{' '}
             <FontAwesomeIcon
-              icon={disabledButton === 'WRAP' ? faSpinner : faLevelDownAlt}
+              icon={disabledButton['WRAP'] ? faSpinner : faLevelDownAlt}
               size="xs"
-              spin={disabledButton === 'WRAP'}
+              spin={disabledButton['WRAP']}
             />
           </WraptorButton>
           <WraptorInput
             type="number"
             value={wrappingAmount}
             onChange={handleWrappingChange}
-            disabled={disabledButton === 'WRAP'}
+            disabled={disabledButton['WRAP']}
           />
         </FlexContainer>
       )}
+      {/* UNWRAPPING */}
       {wraptorApi.unwrap && (
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
-            cursorDisabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
-            disabled={disabledButton === 'UNWRAP' || !unwrappingAmount || +unwrappingAmount <= 0}
+            cursorDisabled={disabledButton['UNWRAP'] || !unwrappingAmount}
+            disabled={disabledButton['UNWRAP'] || !unwrappingAmount || +unwrappingAmount <= 0}
             onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
           >
             {buttonLabels.unwrap}{' '}
             <FontAwesomeIcon
-              icon={disabledButton === 'UNWRAP' ? faSpinner : faLevelUpAlt}
+              icon={disabledButton['UNWRAP'] ? faSpinner : faLevelUpAlt}
               size="xs"
-              spin={disabledButton === 'UNWRAP'}
+              spin={disabledButton['UNWRAP']}
             />
           </WraptorButton>
           <WraptorInput
             type="number"
             value={unwrappingAmount}
             onChange={handleUnwrappingChange}
-            disabled={disabledButton === 'UNWRAP'}
+            disabled={disabledButton['UNWRAP']}
           />
         </FlexContainer>
       )}
