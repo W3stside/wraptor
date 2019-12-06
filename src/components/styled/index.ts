@@ -121,7 +121,7 @@ export const ErrorCloseWrapper = styled.div`
   opacity: 0;
   transition: all 0.2s ease-in-out;
 
-  &::hover {
+  &:hover {
     opacity: 1;
   }
 
