@@ -39,7 +39,6 @@
     "@fortawesome/free-regular-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "tslib": "^1.10.0",
     "web3-utils": "^1.2.4"
   },
   "devDependencies": {
@@ -76,6 +75,7 @@
     "rimraf": "^3.0.0",
     "styled-components": "^4.3.2",
     "ts-loader": "^6.1.0",
+    "tslib": "^1.10.0",
     "typescript": "^3.7.2",
     "webpack": "4.19.1",
     "webpack-cli": "^3.2.1"
