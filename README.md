@@ -89,6 +89,7 @@ interface WraptorComponentProps {
   }
   // Decimals length via .toFixed(fixedNumberAmount)
   fixedNumberAmount?: number // default = 4
+  header?: string | () => React.FC
 }
 
 // App
@@ -119,6 +120,7 @@ const App: React.FC = () => {
             approve: 'Approve GNO'
           }}
           fixedNumberAmount={8}
+          header={() => <h3>TOKEN Wrapper</h3>}
         />
 
         <h5>ETH Wraptor</h5>
@@ -127,6 +129,7 @@ const App: React.FC = () => {
           contractAddress={RINKEBY_WETH} 
           provider={provider} 
           userAddress={USER_ADDRESS} 
+          header='WETH Wrapper' // uses h4 tag if render prop not used
         />
 
       </FlexColumnContainer>
