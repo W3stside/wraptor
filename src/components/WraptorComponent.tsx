@@ -134,7 +134,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton
           cursorDisabled={disabledButton === 'APPROVE' || !approvalAmount}
-          disabled={disabledButton === 'APPROVE' || !approvalAmount}
+          disabled={disabledButton === 'APPROVE' || !approvalAmount || +approvalAmount <= 0}
           onClick={(): Promise<void> => handleApproveSubmit(approvalAmount)}
         >
           {buttonLabels.approve}
@@ -151,7 +151,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
             cursorDisabled={disabledButton === 'WRAP' || !wrappingAmount}
-            disabled={disabledButton === 'WRAP' || !wrappingAmount}
+            disabled={disabledButton === 'WRAP' || !wrappingAmount || +wrappingAmount <= 0}
             onClick={(): Promise<void> => handleWrappingSubmit(wrappingAmount)}
           >
             {buttonLabels.wrap}{' '}
@@ -173,7 +173,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
             cursorDisabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
-            disabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
+            disabled={disabledButton === 'UNWRAP' || !unwrappingAmount || +unwrappingAmount <= 0}
             onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
           >
             {buttonLabels.unwrap}{' '}
@@ -182,23 +182,6 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
               size="xs"
               spin={disabledButton === 'UNWRAP'}
             />
-          </WraptorButton>
-          <WraptorInput
-            type="number"
-            value={wrappingAmount}
-            onChange={handleWrappingChange}
-            disabled={disabledButton === 'WRAP'}
-          />
-        </FlexContainer>
-      )}
-      {wraptorApi.unwrap && (
-        <FlexContainer flow="row wrap" justify="center">
-          <WraptorButton
-            cursorDisabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
-            disabled={disabledButton === 'UNWRAP' || !unwrappingAmount}
-            onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
-          >
-            {disabledButton === 'UNWRAP' ? faSpinner : buttonLabels.unwrap}
           </WraptorButton>
           <WraptorInput
             type="number"
