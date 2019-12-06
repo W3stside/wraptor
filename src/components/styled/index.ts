@@ -121,6 +121,10 @@ export const ErrorCloseWrapper = styled.div`
   opacity: 0;
   transition: all 0.2s ease-in-out;
 
+  &::hover {
+    opacity: 1;
+  }
+
   > div {
     display: inline-flex;
     margin: auto;
@@ -129,9 +133,5 @@ export const ErrorCloseWrapper = styled.div`
     padding: 5px 10px;
     color: white;
     font-weight: 900;
-
-    &::hover {
-      opacity: 1;
-    }
   }
 `
