@@ -1,39 +1,36 @@
-<!-- [![npm version](https://img.shields.io/npm/v/@gnosis.pm/dex-react.svg?style=flat)](https://npmjs.org/package/@gnosis.pm/dex-react 'View this project on npm') -->
-<!-- [![Build Status](https://travis-ci.org/gnosis/dex-react.svg?branch=develop)](https://travis-ci.org/gnosis/dex-react) -->
-<!-- [![Coverage Status](https://coveralls.io/repos/github/gnosis/dex-react/badge.svg?branch=master)](https://coveralls.io/github/gnosis/dex-react?branch=master) -->
-
-<!-- [![Build Status](https://travis-ci.org/gnosis/dex-react.svg?branch=develop)](https://travis-ci.org/gnosis/dex-react) -->
-<!-- [![Coverage Status](https://coveralls.io/repos/github/gnosis/dex-react/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/dex-react?branch=develop) -->
-
-# 🦖 WRAPTOR - Ether > WETH Wrapper
-#### Built on React 16.8+ (hooks) & Typescript 3.72+
+# 🦖 WRAPTOR 🦖 
+## Ether <-> WETH Wrapper and Unwrapper
+##### Built on React 16.8+ (hooks) & Typescript 3.72+
 
 Handles wrapping Ether to Wrapped Ether (WETH) via `useWraptor` hook and/or the `WraptorComponent`
 
-## Using
-1. Hook:
+## Using useWraptor Hook
 
 #### Type: 'ETH' | undefined
 ```ts
 // ETH > WETH Wrapping hook
-useWraptor(type?: 'ETH', {
+useWraptor({
     provider,
     contractAddress,
     userAddress,
-  })
+  }, type?: 'ETH')
 
 // NOTE: leaving out type (i.e undefined) is an alias
 
 /** Returns WETH wrapper API:
 
-* interface Wraptor {
-*   userBalanceWei: string
-*   userAllowanceWei: string
-*   getBalance: () => Promise<void>
-*   getAllowance: () => Promise<void>
-*   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
-*   wrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
-* }
+interface EthWraptor {
+  contract?: Contract
+  tokenDisplay: { name?: string; symbol?: string; decimals?: string }
+  userBalanceWei: string
+  userAllowanceWei: string
+  getBalance: () => Promise<void>
+  getAllowance: () => Promise<void>
+  getTokenDisplay: () => Promise<void>
+  approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
+  wrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
+  unwrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
+}
 
 **/
 ```
@@ -41,56 +38,101 @@ useWraptor(type?: 'ETH', {
 #### Type: 'TOKEN'
 ```ts
 // mini Token API hook
-useWraptor(type: 'TOKEN', {
+useWraptor({
     provider,
     contractAddress,
     userAddress,
-  })
+  }, type: 'TOKEN')
 
 /** Returns Token API:
 
-* interface TokenWraptor {
-*   userBalanceWei: string
-*   userAllowanceWei: string
-*   getBalance: () => Promise<void>
-*   getAllowance: () => Promise<void>
-*   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
-* }
+interface Wraptor {
+  contract?: Contract
+  tokenDisplay: { name?: string; symbol?: string; decimals?: string }
+  userBalanceWei: string
+  userAllowanceWei: string
+  getBalance: () => Promise<void>
+  getAllowance: () => Promise<void>
+  getTokenDisplay: () => Promise<void>
+  approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
+}
 
 **/
 
 // NOTE: Cannot wrap with this API - just approve and get constants
 ```
 
-2. Component
-```ts
-...
-import WraptorComponent from 'components/WraptorComponent'
-import { FlexColumnContainer } from 'components/styled'
-
-import useWindowLoaded from 'hooks/useWindowLoaded'
-
-import { RINKEBY_GNO, USER_ADDRESS, RINKEBY_WETH, INITIAL_INFURA_ENDPOINT } from 'const'
+## Using WraptorComponent
+```tsx
+// ... //
 
 const provider = new Web3(window?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 
+interface WraptorComponentProps {
+  type: 'ETH' | 'TOKEN'
+  provider: Web3
+  contractAddress: string
+  userAddress: string
+  // style
+  customStyle?: CSSObject
+  buttonLabels?: {
+    showAllowance: string
+    showBalance: string
+    approve: string
+    wrap?: string
+    unwrap?: string
+  }
+  tokenDisplay?: {
+    name: string
+    symbol: string
+    decimals: string | number
+  }
+  // Decimals length via .toFixed(fixedNumberAmount)
+  fixedNumberAmount?: number // default = 4
+}
+
 // App
 const App: React.FC = () => {
+  // some hook that waits window load then loads web3...
   const web3Loaded = useWindowLoaded()
+
   return web3Loaded ? (
     <>
       <GlobalStyles />
       <h3>WRAPTOR</h3>
       <FlexColumnContainer width="900px">
-        <h5>Token Wraptor:</h5>
-        <WraptorComponent type="TOKEN" contractAddress={RINKEBY_GNO} provider={provider} userAddress={USER_ADDRESS} />
-        <h5>ETH Wraptor:</h5>
-        <WraptorComponent type="ETH" contractAddress={RINKEBY_WETH} provider={provider} userAddress={USER_ADDRESS} />
+
+        <h5>Token Wraptor</h5>
+        <WraptorComponent 
+          type="TOKEN" 
+          contractAddress={RINKEBY_GNO} 
+          provider={provider} 
+          userAddress={USER_ADDRESS} 
+          tokenDisplay={{
+            name: 'Gnosis Token',
+            symbol: 'GNO',
+            decimals: 18
+          }}
+          buttonLabels={{
+            showAllowance: 'Allowance available',
+            showBalance: 'GNO balance available',
+            approve: 'Approve GNO'
+          }}
+          fixedNumberAmount={8}
+        />
+
+        <h5>ETH Wraptor</h5>
+        <WraptorComponent 
+          type="ETH" 
+          contractAddress={RINKEBY_WETH} 
+          provider={provider} 
+          userAddress={USER_ADDRESS} 
+        />
+
       </FlexColumnContainer>
     </>
   ) : null
 }
-...
 ```
 
 ## Running locally
@@ -104,39 +146,6 @@ yarn start
 ```
 
 Open http://localhost:8080 in any browser.
-
-## Mock mode (default)
-
-The app will run by default in **mock mode**, that means that all service implementations will be replaced by a mocked one with some fake data. This is useful for development, however it's also useful to run it with the actual implementation:
-
-```bash
-# Disable mock mode
-MOCK=false yarn start
-```
-
-Alternatively, if you want to modify always this behaviour, add the env var into a local `.env` file (i.e. use [.env.example](.env.example) as an example of the content).
-
-## Build app
-
-```bash
-yarn build
-```
-
-The static files will be generated in `./dist` dir.
-
-## Run tests
-
-```bash
-yarn test
-```
-
-## Automatically fixing code
-
-Manually, by running:
-
-```bash
-yarn lint:fix
-```
 
 If you use Visual Studio Code, it's recommended to install [Prettier - Code formatter
 ](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and add the following to your `settings.json`
