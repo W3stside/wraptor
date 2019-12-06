@@ -21,17 +21,17 @@
   },
   "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
-    "start": "cd ./example && NODE_ENV=development npx webpack-dev-server --mode development --hot",
     "clean": "rm -rf lib",
     "build": "yarn build:prod",
     "build:dev": "yarn clean && webpack --mode=development",
     "build:prod": "yarn clean && webpack --mode=production",
     "build:watch": "yarn clean && webpack --watch",
-    "lint": "tslint ./src/*.ts ./src/**/*.ts",
+    "lint": "eslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "pre-publish": "yarn clean && yarn build:prod",
+    "pre-publish": "yarn clean && yarn lint && yarn format",
+    "packit": "yarn pack:prod",
     "pack:dev": "yarn build:dev && npm pack",
-    "pack:prod": "yarn build:prod && npm pack"
+    "pack:prod": "yarn pre-publish && yarn build && npm pack"
   },
   "author": "W3stside <doohhello@gmail.com>",
   "dependencies": {
