@@ -142,7 +142,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
           {'  '}
           <FontAwesomeIcon
             icon={disabledButton === 'APPROVE' ? faSpinner : faCheck}
-            size="sm"
+            size="xs"
             spin={disabledButton === 'APPROVE'}
           />
         </WraptorButton>
@@ -158,7 +158,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             {buttonLabels.wrap}{' '}
             <FontAwesomeIcon
               icon={disabledButton === 'WRAP' ? faSpinner : faLevelDownAlt}
-              size="sm"
+              size="xs"
               spin={disabledButton === 'WRAP'}
             />
           </WraptorButton>
@@ -180,7 +180,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             {buttonLabels.unwrap}{' '}
             <FontAwesomeIcon
               icon={disabledButton === 'UNWRAP' ? faSpinner : faLevelUpAlt}
-              size="sm"
+              size="xs"
               spin={disabledButton === 'UNWRAP'}
             />
           </WraptorButton>

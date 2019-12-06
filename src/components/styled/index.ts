@@ -42,6 +42,7 @@ export const WraptorInput = styled.input`
   border-radius: 10px;
   box-shadow: 3px 4px 2px -1px #00000038;
   outline: none;
+  text-align: center;
   transition: background 0.3s ease-in-out;
 
   &:focus {
