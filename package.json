@@ -32,7 +32,7 @@
     "pre-publish": "yarn clean && yarn lint && yarn format",
     "packit": "yarn pack:prod",
     "pack:dev": "yarn build:dev && npm pack",
-    "pack:prod": "yarn pre-publish && yarn build && npm pack"
+    "pack:prod": "yarn build && npm pack"
   },
   "author": "W3stside <doohhello@gmail.com>",
   "dependencies": {
