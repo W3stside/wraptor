@@ -19,6 +19,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   provider,
   contractAddress,
   userAddress,
+  catalyst,
   customStyle,
   buttonLabels = {
     showAllowance: 'Show Allowance',
@@ -47,6 +48,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       provider,
       contractAddress,
       userAddress,
+      catalyst,
     },
     type,
   )

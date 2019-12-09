@@ -11,6 +11,10 @@ export interface WraptorComponentProps {
   provider: Web3
   contractAddress: string
   userAddress: string
+  // catalyst for auto state refresh
+  // like a polling return interval val
+  // or a subscription from web3 etc
+  catalyst?: string | boolean | number
   // style
   customStyle?: CSSObject
   buttonLabels?: {
@@ -33,6 +37,7 @@ export interface WraptorParams {
   provider?: Web3
   contractAddress?: string
   userAddress?: string
+  catalyst?: string | boolean | number
 }
 
 export interface Wraptor {
