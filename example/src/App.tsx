@@ -52,6 +52,7 @@ const AppData: React.FC<{ provider: typeof provider }> = ({ provider }) => {
             decimals: 18,
             symbol: 'GNO',
           }}
+          customStyle={{ width: '40%' }}
         />
         <h5>ETH Wraptor Component:</h5>
         <code>Uses <strong>useInterval</strong> as a polling mechanism that auto refreshes state.</code>

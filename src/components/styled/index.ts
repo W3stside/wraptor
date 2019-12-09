@@ -35,6 +35,8 @@ export const WraptorCode = styled.code`
 export const WraptorInput = styled.input`
   flex: 1 1 49%;
   width: 100%;
+  padding: 0.65em;
+  margin: 0.4em 0.85em;
 
   background: #dededead;
   border: none;
