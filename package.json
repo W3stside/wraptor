@@ -22,6 +22,7 @@
   "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
     "clean": "rm -rf lib",
+    "start": "cd example && yarn install && yarn start",
     "build": "yarn build:prod",
     "build:dev": "yarn clean && webpack --mode=development",
     "build:prod": "yarn clean && webpack --mode=production",
