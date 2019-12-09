@@ -34,9 +34,9 @@ export interface WraptorComponentProps {
 }
 
 export interface WraptorParams {
-  provider?: Web3
-  contractAddress?: string
-  userAddress?: string
+  provider: Web3
+  contractAddress: string
+  userAddress: string
   catalyst?: string | boolean | number
 }
 
