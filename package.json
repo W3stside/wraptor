@@ -1,6 +1,7 @@
 {
   "name": "@w3stside/wraptor",
   "version": "1.0.0",
+  "author": "W3stside <doohhello@gmail.com>",
   "description": "ETH > WETH Wrapper service - also supports (beta) ERC20 tokens",
   "main": "lib/index.js",
   "sideEffects": false,
@@ -22,18 +23,23 @@
   "homepage": "https://github.com/w3stside/wraptor#readme",
   "scripts": {
     "clean": "rm -rf lib",
+    "start": "cd example && yarn install && yarn start",
     "build": "yarn build:prod",
     "build:dev": "yarn clean && webpack --mode=development",
     "build:prod": "yarn clean && webpack --mode=production",
     "build:watch": "yarn clean && webpack --watch",
     "lint": "eslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "pre-publish": "yarn clean && yarn lint && yarn format",
+    "prettify": "yarn lint && yarn format",
     "packit": "yarn pack:prod",
     "pack:dev": "yarn build:dev && npm pack",
-    "pack:prod": "yarn pre-publish && yarn build && npm pack"
+    "pack:prod": "yarn build && npm pack"
   },
-  "author": "W3stside <doohhello@gmail.com>",
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn prettify"
+    }
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-regular-svg-icons": "^5.11.2",
@@ -69,6 +75,7 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.0.1",
     "eslint-utils": ">=1.4.1",
+    "husky": "^3.1.0",
     "prettier": "^1.18.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

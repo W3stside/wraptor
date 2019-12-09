@@ -25,6 +25,7 @@ module.exports = {
     'react/prop-types': [1, { skipUndeclared: true }],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'no-use-before-define': ["error", { "functions": false }]
   },
   plugins: ['react-hooks'],
   settings: {

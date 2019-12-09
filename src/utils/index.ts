@@ -26,3 +26,13 @@ export function assert<T>(val: T, message: string): asserts val is NonNullable<T
     throw new AssertionError({ message })
   }
 }
+export function tokenAssertMessage(
+  action: 'wrap' | 'unwrap',
+  amtSubmitted: string | number,
+  userAmt: string | number,
+  decimals = 18,
+): string {
+  return `Selected ${action} amount is ${((+amtSubmitted - +userAmt) / 10 ** decimals).toFixed(
+    4,
+  )} over your current balance. Please try again with a lower value.`
+}
