@@ -8,17 +8,26 @@ Handles wrapping Ether to Wrapped Ether (WETH) via `useWraptor` hook and/or the 
 
 #### Type: 'ETH' | undefined
 ```ts
-// ETH > WETH Wrapping hook
-useWraptor({
+/**
+ * ETH <-> WETH Wrapping hook
+ * */
+
+// Hook parameters:
+interface WraptorParams {
+  provider?: Web3
+  contractAddress?: string
+  userAddress?: string
+  catalyst?: string | boolean | number
+}
+
+function useWraptor({
     provider,
     contractAddress,
     userAddress,
-  }, type?: 'ETH')
+    catalyst,
+  }: WraptorParams, type?: 'ETH'): EthWraptor {} // NOTE: leaving out type (i.e undefined) is an alias
 
-// NOTE: leaving out type (i.e undefined) is an alias
-
-/** Returns WETH wrapper API:
-
+// Returned interface:
 interface EthWraptor {
   contract?: Contract
   tokenDisplay: { name?: string; symbol?: string; decimals?: string }
@@ -32,20 +41,26 @@ interface EthWraptor {
   unwrap: ({ amount }: { amount: string }) => Promise<TransactionReceipt>
 }
 
-**/
 ```
 
 #### Type: 'TOKEN'
 ```ts
-// mini Token API hook
-useWraptor({
+// Hook parameters:
+interface WraptorParams {
+  provider?: Web3 | { eth: ETH }
+  contractAddress?: string
+  userAddress?: string
+  catalyst?: string | boolean | number
+}
+
+function useWraptor({
     provider,
     contractAddress,
     userAddress,
-  }, type: 'TOKEN')
+    catalyst,
+  }: WraptorParams, type: 'TOKEN'): Wraptor {}
 
-/** Returns Token API:
-
+// Returns Token API:
 interface Wraptor {
   contract?: Contract
   tokenDisplay: { name?: string; symbol?: string; decimals?: string }
@@ -57,15 +72,11 @@ interface Wraptor {
   approve: ({ spenderAddress, amount }: { spenderAddress?: string; amount: string }) => Promise<TransactionReceipt>
 }
 
-**/
-
 // NOTE: Cannot wrap with this API - just approve and get constants
 ```
 
 ## Using WraptorComponent
-```tsx
-// ... //
-
+```ts
 const provider = new Web3(window?.web3?.currentProvider || INITIAL_INFURA_ENDPOINT)
 
 interface WraptorComponentProps {
@@ -73,6 +84,7 @@ interface WraptorComponentProps {
   provider: Web3
   contractAddress: string
   userAddress: string
+  catalyst?: string | number | boolean
   // style
   customStyle?: CSSObject
   buttonLabels?: {
@@ -96,6 +108,9 @@ interface WraptorComponentProps {
 const App: React.FC = () => {
   // some hook that waits window load then loads web3...
   const web3Loaded = useWindowLoaded()
+  // some hook that sets prevState.number + 5 on interval
+  // changes the value every 5 seconds (5000ms)
+  const intervalChange = useInterval(5000)
 
   return web3Loaded ? (
     <>
@@ -129,6 +144,8 @@ const App: React.FC = () => {
           contractAddress={RINKEBY_WETH} 
           provider={provider} 
           userAddress={USER_ADDRESS} 
+          // Interval change causing state refresh (see above)
+          catalyst={intervalChange}
           header='WETH Wrapper' // uses h4 tag if render prop not used
         />
 
@@ -144,11 +161,9 @@ const App: React.FC = () => {
 # Install dependencies
 yarn install
 
-# Start dev server in http://localhost:8080
+# Starts dev server and auto opens tab
 yarn start
 ```
-
-Open http://localhost:8080 in any browser.
 
 If you use Visual Studio Code, it's recommended to install [Prettier - Code formatter
 ](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and add the following to your `settings.json`
