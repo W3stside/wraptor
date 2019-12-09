@@ -63,7 +63,7 @@ const AppData: React.FC<{ provider: typeof provider }> = ({ provider }) => {
           userAddress={USER_ADDRESS}
           catalyst={intervalChange}
           customStyle={{
-            width: 'auto',
+            width: '50%',
             background: '#fff',
           }}
         />

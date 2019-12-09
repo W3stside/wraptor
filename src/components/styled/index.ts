@@ -18,7 +18,6 @@ export const FlexContainer = styled.div<{
 `
 
 export const WraptorContainer = styled(FlexContainer)`
-  width: auto;
   background: #fff;
   border-radius: 10px;
   box-shadow: 3px 4px 2px -1px #0000000f;
@@ -102,6 +101,8 @@ export const ErrorWrapper = styled.div`
   color: red;
   font-size: small;
   font-weight: 600;
+
+  width: 100%;
   padding: 0.65rem;
 
   > code {
