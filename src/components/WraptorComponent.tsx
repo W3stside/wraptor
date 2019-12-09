@@ -160,7 +160,6 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       {/* APPROVE */}
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton
-          cursorDisabled={disabledButton['APPROVE'] || !approvalAmount}
           disabled={disabledButton['APPROVE'] || !approvalAmount || +approvalAmount <= 0}
           onClick={(): Promise<void> => handleApproveSubmit(approvalAmount)}
         >
@@ -183,7 +182,6 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       {wraptorApi.wrap && (
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
-            cursorDisabled={disabledButton['WRAP'] || !wrappingAmount}
             disabled={disabledButton['WRAP'] || !wrappingAmount || +wrappingAmount <= 0}
             onClick={(): Promise<void> => handleWrappingSubmit(wrappingAmount)}
           >
@@ -206,7 +204,6 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       {wraptorApi.unwrap && (
         <FlexContainer flow="row wrap" justify="center">
           <WraptorButton
-            cursorDisabled={disabledButton['UNWRAP'] || !unwrappingAmount}
             disabled={disabledButton['UNWRAP'] || !unwrappingAmount || +unwrappingAmount <= 0}
             onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
           >

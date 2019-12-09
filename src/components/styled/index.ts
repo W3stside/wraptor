@@ -50,14 +50,14 @@ export const WraptorInput = styled.input`
   }
 `
 
-export const WraptorButton = styled.button<{ cursorDisabled?: boolean; customStyle?: CSSObject }>`
+export const WraptorButton = styled.button<{ customStyle?: CSSObject }>`
   flex: 1 1 40%;
 
   color: #fff;
   background: #9b8dfa;
   border: none;
   border-radius: 2px;
-  cursor: ${(props): string => (props.cursorDisabled ? 'not-allowed' : 'pointer')};
+  cursor: pointer;
 
   padding: 0.5rem;
   margin: 0.5rem;
@@ -73,7 +73,7 @@ export const WraptorButton = styled.button<{ cursorDisabled?: boolean; customSty
     pointer-events: none;
   }
 
-  :hover {
+  &:hover {
     background: #7460f8;
     color: #fff;
   }
