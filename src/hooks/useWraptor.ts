@@ -8,7 +8,7 @@ import Erc20Abi from '../abi/ERC20Abi'
 // Tools/Consts
 import { toWei } from 'web3-utils'
 import { TOKEN, ETH } from '../const'
-import { assert } from '../utils'
+import { assert, tokenAssertMessage } from '../utils'
 
 // Types
 import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from '../types'
@@ -19,7 +19,7 @@ function useWraptor({ provider, contractAddress, userAddress, catalyst }: Wrapto
 function useWraptor(
   { provider, contractAddress, userAddress, catalyst }: WraptorParams,
   type?: 'ETH' | 'TOKEN' | string,
-): EthWraptor | Wraptor | null {
+): EthWraptor | Wraptor {
   if (type && type !== ETH && type !== TOKEN) console.warn(`${type} is not supported, defaulting to ETH Wraptor`)
 
   const [contract, setContract] = useState<Contract>()
@@ -30,8 +30,6 @@ function useWraptor(
   // Load contract on mount
   useEffect(() => {
     const loadContract = async (): Promise<void> => {
-      if (!provider || !provider.eth) return
-
       const finalContractAbi = type === TOKEN ? Erc20Abi : WETH9Abi
       const contract = new provider.eth.Contract(finalContractAbi, contractAddress)
 
@@ -43,19 +41,21 @@ function useWraptor(
   // *****************************************************
   // PRIVATE METHODS
   const {
+    _getUserEtherBalance,
     _getName,
     _getSymbol,
     _getDecimals,
-    _getUserBalance,
+    _getTokenBalance,
     _getUserAllowance,
     _approve,
     _deposit,
     _withdraw,
   } = useMemo(() => {
+    const _getUserEtherBalance = async (): Promise<string> => provider.eth.getBalance(userAddress)
     const _getName = async (): Promise<string> => contract?.methods?.name().call()
     const _getSymbol = async (): Promise<string> => contract?.methods?.symbol().call()
     const _getDecimals = async (): Promise<string> => contract?.methods?.decimals().call()
-    const _getUserBalance = async (): Promise<string> =>
+    const _getTokenBalance = async (): Promise<string> =>
       contract?.methods?.balanceOf(userAddress).call({ from: userAddress })
     const _getUserAllowance = async (): Promise<string> =>
       contract?.methods?.allowance(userAddress, contract.options.address).call({ from: userAddress })
@@ -72,16 +72,17 @@ function useWraptor(
       contract?.methods?.withdraw(amount).send({ from: userAddress })
 
     return {
+      _getUserEtherBalance,
       _getName,
       _getSymbol,
       _getDecimals,
-      _getUserBalance,
+      _getTokenBalance,
       _getUserAllowance,
       _approve,
       _deposit,
       _withdraw,
     }
-  }, [contract, userAddress])
+  }, [contract, provider, userAddress])
 
   // *****************************************************
   // PUBLIC METHODS
@@ -100,7 +101,7 @@ function useWraptor(
       })
     }
     const getBalance = async (): Promise<void> => {
-      const amount = await _getUserBalance()
+      const amount = await _getTokenBalance()
 
       return setUserBalanceWei(amount)
     }
@@ -123,10 +124,16 @@ function useWraptor(
     }
     const wrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
+      const userEth = await _getUserEtherBalance()
+
+      assert(+userEth > +formattedAmount, tokenAssertMessage('wrap', formattedAmount, userEth, 18))
       return _deposit({ amount: formattedAmount })
     }
     const unwrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
+      const userWeth = await _getTokenBalance()
+
+      assert(+userWeth > +formattedAmount, tokenAssertMessage('unwrap', formattedAmount, userWeth, 18))
       return _withdraw({ amount: formattedAmount })
     }
 
@@ -138,14 +145,23 @@ function useWraptor(
       wrap,
       unwrap,
     }
-  }, [_approve, _deposit, _getDecimals, _getName, _getSymbol, _getUserAllowance, _getUserBalance, _withdraw, contract])
+  }, [
+    _getName,
+    _getSymbol,
+    _getDecimals,
+    _getTokenBalance,
+    _getUserAllowance,
+    contract,
+    _approve,
+    _getUserEtherBalance,
+    _deposit,
+    _withdraw,
+  ])
 
   // Constant state values refresh hook
   useEffect(() => {
     Promise.all([getTokenDisplay(), getAllowance(), getBalance()])
   }, [catalyst, getAllowance, getBalance, getTokenDisplay])
-
-  if (!provider || !contractAddress || !userAddress) return null
 
   // Return logic
   const baseReturn: Wraptor = {
