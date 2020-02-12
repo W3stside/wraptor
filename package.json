@@ -45,6 +45,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "styled-components": "^5.0.1",
     "web3-utils": "^1.2.4"
   },
   "devDependencies": {
@@ -89,7 +90,6 @@
   },
   "peerDependencies": {
     "react": ">= 16.8.0",
-    "react-dom": ">= 16.8.0",
-    "styled-components": ">= 4"
+    "react-dom": ">= 16.8.0"
   }
 }
