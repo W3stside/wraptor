@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import { useState, useEffect, useMemo } from 'react'
 
 // WETH9 Abi (Canonical WETH)
@@ -31,9 +32,16 @@ function useWraptor(
   useEffect(() => {
     const loadContract = async (): Promise<void> => {
       const finalContractAbi = type === TOKEN ? Erc20Abi : WETH9Abi
-      const contract = new provider.eth.Contract(finalContractAbi, contractAddress)
+      // @ts-ignore
+      const contractConstructor = provider?.eth?.Contract || provider?.eth?.contract
 
-      return setContract(contract)
+      if (contractConstructor) {
+        const contract = new contractConstructor(finalContractAbi, contractAddress)
+
+        return setContract(contract)
+      } else {
+        console.error('No valid Provider / Eth API detected.')
+      }
     }
     loadContract()
   }, [contractAddress, type, provider])
