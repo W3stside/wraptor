@@ -1,6 +1,6 @@
 {
   "name": "@w3stside/wraptor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "W3stside <doohhello@gmail.com>",
   "description": "ETH > WETH Wrapper service - also supports (beta) ERC20 tokens",
   "main": "lib/index.js",
