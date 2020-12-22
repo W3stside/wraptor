@@ -67,6 +67,7 @@ function useWraptor(
       contract?.methods?.balanceOf(userAddress).call({ from: userAddress })
     const _getUserAllowance = async (): Promise<string> =>
       contract?.methods?.allowance(userAddress, contract.options.address).call({ from: userAddress })
+
     const _approve = async ({
       spenderAddress,
       amount,
@@ -74,6 +75,7 @@ function useWraptor(
       spenderAddress: string
       amount: string
     }): Promise<TransactionReceipt> => contract?.methods?.approve(spenderAddress, amount).send({ from: userAddress })
+
     const _deposit = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
       contract?.methods?.deposit().send({ from: userAddress, value: amount })
     const _withdraw = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
