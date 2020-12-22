@@ -51,7 +51,7 @@ export const WraptorInput = styled.input`
   }
 `
 
-export const WraptorButton = styled.button<{ customStyle?: CSSObject }>`
+export const WraptorButton = styled.button.attrs({ type: 'button' })<{ customStyle?: CSSObject }>`
   flex: 1 1 40%;
 
   color: #fff;

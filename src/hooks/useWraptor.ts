@@ -12,7 +12,7 @@ import { TOKEN, ETH } from '../const'
 import { assert, tokenAssertMessage } from '../utils'
 
 // Types
-import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt } from '../types'
+import { WraptorParams, Contract, EthWraptor, Wraptor, TransactionReceipt, SimpleERC20 } from '../types'
 
 function useWraptor({ provider, contractAddress, userAddress, catalyst }: WraptorParams, type: 'TOKEN'): Wraptor
 function useWraptor({ provider, contractAddress, userAddress, catalyst }: WraptorParams, type?: 'ETH'): EthWraptor
@@ -24,9 +24,9 @@ function useWraptor(
   if (type && type !== ETH && type !== TOKEN) console.warn(`${type} is not supported, defaulting to ETH Wraptor`)
 
   const [contract, setContract] = useState<Contract>()
-  const [tokenDisplay, setTokenDisplay] = useState()
-  const [userBalanceWei, setUserBalanceWei] = useState()
-  const [userAllowanceWei, setUserAllowanceWei] = useState()
+  const [tokenDisplay, setTokenDisplay] = useState<SimpleERC20>()
+  const [userBalanceWei, setUserBalanceWei] = useState<string>()
+  const [userAllowanceWei, setUserAllowanceWei] = useState<string>()
 
   // Load contract on mount
   useEffect(() => {
@@ -62,11 +62,12 @@ function useWraptor(
     const _getUserEtherBalance = async (): Promise<string> => provider.eth.getBalance(userAddress)
     const _getName = async (): Promise<string> => contract?.methods?.name().call()
     const _getSymbol = async (): Promise<string> => contract?.methods?.symbol().call()
-    const _getDecimals = async (): Promise<string> => contract?.methods?.decimals().call()
+    const _getDecimals = async (): Promise<number> => contract?.methods?.decimals().call()
     const _getTokenBalance = async (): Promise<string> =>
       contract?.methods?.balanceOf(userAddress).call({ from: userAddress })
     const _getUserAllowance = async (): Promise<string> =>
       contract?.methods?.allowance(userAddress, contract.options.address).call({ from: userAddress })
+
     const _approve = async ({
       spenderAddress,
       amount,
@@ -74,6 +75,7 @@ function useWraptor(
       spenderAddress: string
       amount: string
     }): Promise<TransactionReceipt> => contract?.methods?.approve(spenderAddress, amount).send({ from: userAddress })
+
     const _deposit = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
       contract?.methods?.deposit().send({ from: userAddress, value: amount })
     const _withdraw = async ({ amount }: { amount: string }): Promise<TransactionReceipt> =>
@@ -99,25 +101,28 @@ function useWraptor(
       const [name, symbol, decimals] = await Promise.all([
         _getName().catch(() => undefined),
         _getSymbol().catch(() => undefined),
-        _getDecimals().catch(() => undefined),
+        _getDecimals().catch(() => 18),
       ])
 
       return setTokenDisplay({
         name,
         symbol,
-        decimals,
+        decimals: decimals || 18,
       })
     }
+
     const getBalance = async (): Promise<void> => {
       const amount = await _getTokenBalance()
 
       return setUserBalanceWei(amount)
     }
+
     const getAllowance = async (): Promise<void> => {
       const amount = await _getUserAllowance()
 
       return setUserAllowanceWei(amount)
     }
+
     const approve = async ({
       spenderAddress = contract?.options.address,
       amount,
@@ -130,6 +135,7 @@ function useWraptor(
       const formattedAmount = toWei(amount)
       return _approve({ spenderAddress, amount: formattedAmount })
     }
+
     const wrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
       const userEth = await _getUserEtherBalance()
@@ -137,6 +143,7 @@ function useWraptor(
       assert(+userEth > +formattedAmount, tokenAssertMessage('wrap', formattedAmount, userEth, 18))
       return _deposit({ amount: formattedAmount })
     }
+
     const unwrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
       const userWeth = await _getTokenBalance()

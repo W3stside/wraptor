@@ -24,11 +24,7 @@ export interface WraptorComponentProps {
     wrap?: string
     unwrap?: string
   }
-  tokenDisplay?: {
-    name: string
-    symbol: string
-    decimals: string | number
-  }
+  tokenDisplay?: SimpleERC20
   fixedNumberAmount?: number
   header?: string | Function
 }
@@ -42,9 +38,9 @@ export interface WraptorParams {
 
 export interface Wraptor {
   contract?: Contract
-  tokenDisplay: { name?: string; symbol?: string; decimals?: string }
-  userBalanceWei: string
-  userAllowanceWei: string
+  tokenDisplay?: SimpleERC20
+  userBalanceWei?: string
+  userAllowanceWei?: string
   getBalance: () => Promise<void>
   getAllowance: () => Promise<void>
   getTokenDisplay: () => Promise<void>
@@ -61,3 +57,9 @@ export interface TargetValueInterface {
 }
 
 export { Contract, TransactionReceipt, AbiItem }
+
+export interface SimpleERC20 {
+  name?: string
+  symbol?: string
+  decimals: number
+}
