@@ -22,8 +22,8 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   catalyst,
   customStyle,
   buttonLabels = {
-    showAllowance: 'Show Allowance',
-    showBalance: 'Show Balance',
+    showAllowance: 'Current Allowance',
+    showBalance: 'Current Balance',
     approve: 'Approve',
     wrap: 'Wrap',
     unwrap: 'Unwrap',
@@ -137,6 +137,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     <WraptorContainer customStyle={customStyle}>
       {header && typeof header === 'function' ? header() : <h3>{header}</h3>}
       {error && <ErrorMessage onClick={(): void => setError(undefined)} message={error.message} />}
+
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getAllowance}>{buttonLabels.showAllowance}</WraptorButton>
         <WraptorCode>
@@ -147,6 +148,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             : '-'}
         </WraptorCode>
       </FlexContainer>
+
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getBalance}>{buttonLabels.showBalance}</WraptorButton>
         <WraptorCode>
@@ -157,8 +159,15 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             : '-'}
         </WraptorCode>
       </FlexContainer>
+
       {/* APPROVE */}
-      <FlexContainer flow="row wrap" justify="center">
+      <FlexContainer flow="row-reverse wrap" justify="center">
+        <WraptorInput
+          type="number"
+          value={approvalAmount}
+          onChange={handleApproveChange}
+          disabled={disabledButton['APPROVE']}
+        />
         <WraptorButton
           disabled={disabledButton['APPROVE'] || !approvalAmount || +approvalAmount <= 0}
           onClick={(): Promise<void> => handleApproveSubmit(approvalAmount)}
@@ -171,16 +180,17 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
             spin={disabledButton['APPROVE']}
           />
         </WraptorButton>
-        <WraptorInput
-          type="number"
-          value={approvalAmount}
-          onChange={handleApproveChange}
-          disabled={disabledButton['APPROVE']}
-        />
       </FlexContainer>
+
       {/* WRAPPING */}
       {wraptorApi.wrap && (
-        <FlexContainer flow="row wrap" justify="center">
+        <FlexContainer flow="row-reverse wrap" justify="center">
+          <WraptorInput
+            type="number"
+            value={wrappingAmount}
+            onChange={handleWrappingChange}
+            disabled={disabledButton['WRAP']}
+          />
           <WraptorButton
             disabled={disabledButton['WRAP'] || !wrappingAmount || +wrappingAmount <= 0}
             onClick={(): Promise<void> => handleWrappingSubmit(wrappingAmount)}
@@ -192,17 +202,18 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
               spin={disabledButton['WRAP']}
             />
           </WraptorButton>
-          <WraptorInput
-            type="number"
-            value={wrappingAmount}
-            onChange={handleWrappingChange}
-            disabled={disabledButton['WRAP']}
-          />
         </FlexContainer>
       )}
+
       {/* UNWRAPPING */}
       {wraptorApi.unwrap && (
-        <FlexContainer flow="row wrap" justify="center">
+        <FlexContainer flow="row-reverse wrap" justify="center">
+          <WraptorInput
+            type="number"
+            value={unwrappingAmount}
+            onChange={handleUnwrappingChange}
+            disabled={disabledButton['UNWRAP']}
+          />
           <WraptorButton
             disabled={disabledButton['UNWRAP'] || !unwrappingAmount || +unwrappingAmount <= 0}
             onClick={(): Promise<void> => handleUnwrappingSubmit(unwrappingAmount)}
@@ -214,12 +225,6 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
               spin={disabledButton['UNWRAP']}
             />
           </WraptorButton>
-          <WraptorInput
-            type="number"
-            value={unwrappingAmount}
-            onChange={handleUnwrappingChange}
-            disabled={disabledButton['UNWRAP']}
-          />
         </FlexContainer>
       )}
     </WraptorContainer>
