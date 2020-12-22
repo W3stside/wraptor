@@ -41,7 +41,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
     UNWRAP: false,
     APPROVE: false,
   })
-  const [error, setError] = useState()
+  const [error, setError] = useState<Error>()
 
   const wraptorApi = useWraptor(
     {
@@ -121,7 +121,7 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
       await wraptorApi.unwrap({ amount })
     } catch (error) {
       console.error('UNWRAPPING ERROR: ', error)
-      setError(error)
+      setError(new Error(error))
     } finally {
       batchedUpdate(() => {
         setUnwrappingAmount('')
@@ -136,7 +136,12 @@ const WraptorComponent: React.FC<WraptorComponentProps> = ({
   return (
     <WraptorContainer customStyle={customStyle}>
       {header && typeof header === 'function' ? header() : <h3>{header}</h3>}
-      {error && <ErrorMessage onClick={(): void => setError(undefined)} message={error.message} />}
+      {error && (
+        <ErrorMessage
+          onClick={(): void => setError(undefined)}
+          message={error?.message || 'An unknown error occurred'}
+        />
+      )}
 
       <FlexContainer flow="row wrap" justify="center">
         <WraptorButton onClick={getAllowance}>{buttonLabels.showAllowance}</WraptorButton>
