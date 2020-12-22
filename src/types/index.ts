@@ -24,11 +24,7 @@ export interface WraptorComponentProps {
     wrap?: string
     unwrap?: string
   }
-  tokenDisplay?: {
-    name: string
-    symbol: string
-    decimals: string | number
-  }
+  tokenDisplay: SimpleERC20
   fixedNumberAmount?: number
   header?: string | Function
 }
