@@ -174,8 +174,7 @@ function useWraptor(
   // Constant state values refresh hook
   useEffect(() => {
     Promise.all([getTokenDisplay(), getAllowance(), getBalance()])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [catalyst])
+  }, [catalyst, getAllowance, getBalance, getTokenDisplay])
 
   // Return logic
   const baseReturn: Wraptor = {
