@@ -105,19 +105,22 @@ function useWraptor(
       return setTokenDisplay({
         name,
         symbol,
-        decimals,
+        decimals: decimals || 18,
       })
     }
+
     const getBalance = async (): Promise<void> => {
       const amount = await _getTokenBalance()
 
       return setUserBalanceWei(amount)
     }
+
     const getAllowance = async (): Promise<void> => {
       const amount = await _getUserAllowance()
 
       return setUserAllowanceWei(amount)
     }
+
     const approve = async ({
       spenderAddress = contract?.options.address,
       amount,
@@ -130,6 +133,7 @@ function useWraptor(
       const formattedAmount = toWei(amount)
       return _approve({ spenderAddress, amount: formattedAmount })
     }
+
     const wrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
       const userEth = await _getUserEtherBalance()
@@ -137,6 +141,7 @@ function useWraptor(
       assert(+userEth > +formattedAmount, tokenAssertMessage('wrap', formattedAmount, userEth, 18))
       return _deposit({ amount: formattedAmount })
     }
+
     const unwrap = async ({ amount }: { amount: string }): Promise<TransactionReceipt> => {
       const formattedAmount = toWei(amount)
       const userWeth = await _getTokenBalance()
@@ -169,7 +174,8 @@ function useWraptor(
   // Constant state values refresh hook
   useEffect(() => {
     Promise.all([getTokenDisplay(), getAllowance(), getBalance()])
-  }, [catalyst, getAllowance, getBalance, getTokenDisplay])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [catalyst])
 
   // Return logic
   const baseReturn: Wraptor = {

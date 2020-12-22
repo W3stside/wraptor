@@ -24,7 +24,7 @@ export interface WraptorComponentProps {
     wrap?: string
     unwrap?: string
   }
-  tokenDisplay: SimpleERC20
+  tokenDisplay?: SimpleERC20
   fixedNumberAmount?: number
   header?: string | Function
 }
